@@ -342,15 +342,15 @@ export const LoadParametersPanel: React.FC<ControlPanelProps> = ({
  */
 export const PlaybackPanel: React.FC<{ playback: PlaybackControls }> = ({ playback }) => {
   const iconBtn =
-    'h-11 w-11 flex items-center justify-center rounded-lg border border-slate-800 bg-slate-950/50 text-slate-300 hover:text-slate-50 hover:bg-slate-800 hover:border-slate-700 transition-colors';
+    'h-11 w-11 shrink-0 flex items-center justify-center rounded-lg border border-slate-800 bg-slate-950/50 text-slate-300 hover:text-slate-50 hover:bg-slate-800 hover:border-slate-700 transition-colors';
 
   return (
     <div className="no-print border-t border-slate-800 bg-slate-950/60 text-slate-200">
-      <div className="px-4 py-3 flex flex-wrap items-center gap-x-5 gap-y-3">
-        <span className="text-sm font-semibold text-slate-300">Playback:</span>
+      <div className="px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+        <span className="text-sm font-semibold text-slate-300 w-full sm:w-auto">Playback:</span>
 
         {/* Transport + speed, left-aligned */}
-        <div className="flex flex-1 flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-1 basis-[300px] items-center gap-3">
           <button
             type="button"
             onClick={() => playback.onSampleChange(0)}
@@ -370,7 +370,7 @@ export const PlaybackPanel: React.FC<{ playback: PlaybackControls }> = ({ playba
           <button
             type="button"
             onClick={playback.onTogglePlay}
-            className={`h-11 w-36 shrink-0 flex items-center justify-center gap-2 font-semibold rounded-lg border text-base transition-colors ${
+            className={`h-11 min-w-[7rem] flex-1 flex items-center justify-center gap-2 font-semibold rounded-lg border text-base transition-colors ${
               playback.isPlaying
                 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
                 : 'bg-emerald-500 text-slate-950 border-emerald-500 hover:bg-emerald-400 shadow-sm'
@@ -399,23 +399,24 @@ export const PlaybackPanel: React.FC<{ playback: PlaybackControls }> = ({ playba
             <SkipForward className="w-5 h-5" />
           </button>
 
-          {/* Speed selector */}
-          <div className="h-11 flex items-stretch border border-slate-800 rounded-lg overflow-hidden text-sm font-mono">
-            {[0.1, 0.25, 0.5, 1.0, 2.0].map((spd) => (
-              <button
-                key={spd}
-                type="button"
-                onClick={() => playback.onChangeSpeed(spd)}
-                className={`px-4 transition-colors ${
-                  playback.playbackSpeed === spd
-                    ? 'bg-slate-700 text-amber-300 font-semibold'
-                    : 'text-slate-400 hover:bg-slate-800'
-                }`}
-              >
-                {spd}x
-              </button>
-            ))}
-          </div>
+        </div>
+
+        {/* Speed selector */}
+        <div className="h-11 flex flex-1 basis-[260px] items-stretch border border-slate-800 rounded-lg overflow-hidden text-sm font-mono">
+          {[0.1, 0.25, 0.5, 1.0, 2.0].map((spd) => (
+            <button
+              key={spd}
+              type="button"
+              onClick={() => playback.onChangeSpeed(spd)}
+              className={`flex-1 px-2 transition-colors ${
+                playback.playbackSpeed === spd
+                  ? 'bg-slate-700 text-amber-300 font-semibold'
+                  : 'text-slate-400 hover:bg-slate-800'
+              }`}
+            >
+              {spd}x
+            </button>
+          ))}
         </div>
       </div>
     </div>

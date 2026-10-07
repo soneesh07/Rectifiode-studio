@@ -137,10 +137,10 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Zone 2: Interactive Header Points with Real Functionality - Center Aligned */}
       <div className="no-print hidden xl:flex flex-1 min-w-0 justify-center items-center px-4">
-        <nav className="flex items-center gap-2 xl:gap-3 text-xs font-medium min-w-0 max-w-full">
+        <nav className="flex items-center gap-2 text-xs font-medium min-w-0 max-w-full">
         {/* Current converter: name, phase count, pulse number and type */}
         <div
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-slate-900/70 border-slate-700 flex-none w-[clamp(240px,22vw,300px)] 2xl:w-[440px] overflow-hidden"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-slate-900/70 border-slate-700 shrink min-w-[130px] w-[clamp(180px,16vw,260px)] 2xl:w-[440px] overflow-hidden"
           title={currentConfig?.description}
         >
           <span
@@ -383,7 +383,8 @@ export const Header: React.FC<HeaderProps> = ({
           title="Open the User Guide"
         >
           <Info className="w-3.5 h-3.5" />
-          <span>User Guide</span>
+          <span className="2xl:hidden">Guide</span>
+          <span className="hidden 2xl:inline">User Guide</span>
         </button>
 
         {/* Print / PDF: always printed with the light shades, whichever theme is on screen */}
