@@ -1,0 +1,340 @@
+@import "tailwindcss";
+
+/*
+ * ============================================================================
+ *  Rectifiode Studio — design tokens
+ * ============================================================================
+ *  One palette, two shade-sets.
+ *
+ *    • slate   → "ink teal" neutrals (backgrounds, borders, text)
+ *    • sky     → aqua teal        (primary accent: voltages, links, focus)
+ *    • emerald → sea green        (currents, "conducting", success)
+ *    • indigo  → steel blue       (secondary data series)
+ *    • purple  → dusty lilac      (tertiary data series)
+ *    • amber   → brass gold       (the single warm accent: firing angle, highlights)
+ *    • red     → terracotta       (warnings, source phase A)
+ *    • pink    → dusty rose       (rare)
+ *
+ *  Every component only uses these Tailwind names (bg-slate-900, text-sky-400 …).
+ *  The DARK set is declared below; `html.theme-light` (and print) swap the SAME
+ *  variable names to the LIGHT shades, so components never need isLight branches
+ *  and canvas/SVG code can read the very same tokens.
+ *
+ *  Light-mode rule of thumb: slate-950 = page, slate-900 = card, slate-800 = border,
+ *  slate-100 = body text — exactly like dark mode, just with the scale flipped.
+ * ============================================================================
+ */
+
+/* Tailwind v4: `dark:` follows our theme class, not the OS setting */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme static {
+  /* Drop Tailwind's default colour palettes — only our palette exists. */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* ---- Text scale (bumped ~1-2px for readability) ---------------------- */
+  --text-xs: 0.875rem;   --text-xs--line-height: 1.25rem;
+  --text-sm: 1rem;       --text-sm--line-height: 1.5rem;
+  --text-base: 1.125rem; --text-base--line-height: 1.65rem;
+  --text-lg: 1.25rem;    --text-lg--line-height: 1.75rem;
+  --text-xl: 1.4rem;     --text-xl--line-height: 1.85rem;
+
+  /* ---- Typography ------------------------------------------------------ */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-sans); /* unified: headings use the same Inter family as body text */
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* ---- DARK shades (default) -------------------------------------------- */
+  --color-slate-50: #edfafb; --color-slate-100: #e2f0f1; --color-slate-200: #d0e0e2; --color-slate-300: #b4c7c9; --color-slate-400: #95abad; --color-slate-500: #789093;
+  --color-slate-600: #4c696c; --color-slate-700: #31484b; --color-slate-800: #1f3335; --color-slate-900: #132426; --color-slate-950: #091819;
+  --color-sky-50: #e5fcfe; --color-sky-100: #c1f8ff; --color-sky-200: #86eefa; --color-sky-300: #67dbe8; --color-sky-400: #45c7d4; --color-sky-500: #15afbd;
+  --color-sky-600: #028c98; --color-sky-700: #016c75; --color-sky-800: #045057; --color-sky-900: #00393f; --color-sky-950: #002327;
+  --color-emerald-50: #e2fff1; --color-emerald-100: #baffe0; --color-emerald-200: #9af0cb; --color-emerald-300: #80deb6; --color-emerald-400: #65c9a1; --color-emerald-500: #48b289;
+  --color-emerald-600: #24906b; --color-emerald-700: #057051; --color-emerald-800: #02543b; --color-emerald-900: #033c29; --color-emerald-950: #082419;
+  --color-indigo-50: #f1f8fe; --color-indigo-100: #dfeffe; --color-indigo-200: #bce0ff; --color-indigo-300: #97cefd; --color-indigo-400: #7fb9ea; --color-indigo-500: #67a2d2;
+  --color-indigo-600: #4981af; --color-indigo-700: #32638b; --color-indigo-800: #234a69; --color-indigo-900: #18344b; --color-indigo-950: #10202d;
+  --color-purple-50: #f6f6ff; --color-purple-100: #eceafe; --color-purple-200: #d9d5fe; --color-purple-300: #c6bff8; --color-purple-400: #b1aae4; --color-purple-500: #9a93cd;
+  --color-purple-600: #7b73aa; --color-purple-700: #5e5886; --color-purple-800: #464066; --color-purple-900: #312d48; --color-purple-950: #1e1c2b;
+  --color-amber-50: #fff6e6; --color-amber-100: #ffeac6; --color-amber-200: #fed487; --color-amber-300: #edc06b; --color-amber-400: #d9ab4f; --color-amber-500: #c29330;
+  --color-amber-600: #9f7305; --color-amber-700: #7b5802; --color-amber-800: #5c4100; --color-amber-900: #422d00; --color-amber-950: #281c03;
+  --color-red-50: #fef4f3; --color-red-100: #fee6e4; --color-red-200: #ffcdc8; --color-red-300: #feb0a9; --color-red-400: #ed9992; --color-red-500: #d5817a;
+  --color-red-600: #b0625d; --color-red-700: #8c4944; --color-red-800: #6a3431; --color-red-900: #4b2522; --color-red-950: #2d1715;
+  --color-pink-50: #fff4f6; --color-pink-100: #fee6ea; --color-pink-200: #fecbd5; --color-pink-300: #f7b1c0; --color-pink-400: #e39bab; --color-pink-500: #cb8494;
+  --color-pink-600: #a86575; --color-pink-700: #844b59; --color-pink-800: #643742; --color-pink-900: #47262e; --color-pink-950: #2b181c;
+}
+
+/* ---- LIGHT shades: same names, hand-tuned (not a mirror of the dark set) ------
+   slate-950 = page, 900 = card (white), 800 = hairline border, 700 = stronger border,
+   600-500 = muted text, 400-100 = body text. Accent 400 = readable text, 500 = fill,
+   600-950 = soft tints. */
+html.theme-light {
+  color-scheme: light;
+  --color-slate-50: #0a1a1e; --color-slate-100: #12262b; --color-slate-200: #1f3a40; --color-slate-300: #34525a; --color-slate-400: #4a666d; --color-slate-500: #5f7a81; --color-slate-600: #8aa0a6; --color-slate-700: #b7c7cc; --color-slate-800: #d6e1e5; --color-slate-900: #ffffff; --color-slate-950: #eef3f6;
+  --color-sky-50: #03242a; --color-sky-100: #053a42; --color-sky-200: #07505a; --color-sky-300: #0a6672; --color-sky-400: #0a7a88; --color-sky-500: #0d93a3; --color-sky-600: #35b2c0; --color-sky-700: #7fd0da; --color-sky-800: #b4e6ec; --color-sky-900: #d9f3f6; --color-sky-950: #eefafb;
+  --color-emerald-50: #052a1c; --color-emerald-100: #07402b; --color-emerald-200: #0a5539; --color-emerald-300: #0b6a48; --color-emerald-400: #0e7f58; --color-emerald-500: #17a070; --color-emerald-600: #4cbd94; --color-emerald-700: #86d8b9; --color-emerald-800: #b7ead5; --color-emerald-900: #d9f4e9; --color-emerald-950: #eefaf5;
+  --color-indigo-50: #0c1e33; --color-indigo-100: #11304f; --color-indigo-200: #17446c; --color-indigo-300: #1f5a88; --color-indigo-400: #2a70a3; --color-indigo-500: #3c8ac0; --color-indigo-600: #6aa8d4; --color-indigo-700: #9cc7e6; --color-indigo-800: #c3dcf0; --color-indigo-900: #e0edf8; --color-indigo-950: #f1f7fc;
+  --color-purple-50: #1c1840; --color-purple-100: #2a2459; --color-purple-200: #3b3377; --color-purple-300: #4d4393; --color-purple-400: #6156ac; --color-purple-500: #7a70c4; --color-purple-600: #a199dc; --color-purple-700: #c3bdea; --color-purple-800: #dedaf4; --color-purple-900: #eeecfa; --color-purple-950: #f7f6fd;
+  --color-amber-50: #2e1d00; --color-amber-100: #432b00; --color-amber-200: #5c3c00; --color-amber-300: #774f00; --color-amber-400: #926300; --color-amber-500: #b57c06; --color-amber-600: #d9a02e; --color-amber-700: #ebbf66; --color-amber-800: #f5d8a0; --color-amber-900: #fbebcb; --color-amber-950: #fef7e8;
+  --color-red-50: #36100d; --color-red-100: #4f1a16; --color-red-200: #6b2520; --color-red-300: #8a322b; --color-red-400: #a8433b; --color-red-500: #c65a51; --color-red-600: #de8a82; --color-red-700: #eeb0aa; --color-red-800: #f6cdc9; --color-red-900: #fbe5e3; --color-red-950: #fef3f2;
+  --color-pink-50: #3a1020; --color-pink-100: #521a30; --color-pink-200: #6f2641; --color-pink-300: #8e3454; --color-pink-400: #ab4768; --color-pink-500: #c75f82; --color-pink-600: #de8fa8; --color-pink-700: #eeb4c6; --color-pink-800: #f6d0dc; --color-pink-900: #fbe6ed; --color-pink-950: #fef3f6;
+}
+html:not(.theme-light) {
+  color-scheme: dark;
+}
+
+
+/* ---- Light-theme polish: a real daylight look, not an inverted dark UI ------ */
+html.theme-light body {
+  background: linear-gradient(180deg, #f6f9fb 0%, #e9f0f4 100%) fixed;
+  color: var(--color-slate-100);
+}
+html.theme-light header {
+  background-color: rgba(255, 255, 255, 0.88);
+  border-bottom-color: var(--color-slate-800);
+  box-shadow: 0 1px 0 rgba(15, 45, 55, 0.04), 0 6px 20px -12px rgba(15, 45, 55, 0.25);
+}
+/* Cards: white surfaces with a hairline border and a soft, cool shadow instead of heavy black ones */
+html.theme-light .shadow-lg,
+html.theme-light .shadow-xl,
+html.theme-light .shadow-2xl {
+  box-shadow: 0 1px 2px rgba(15, 45, 55, 0.06), 0 10px 28px -12px rgba(15, 45, 55, 0.18);
+}
+html.theme-light .shadow-sm { box-shadow: 0 1px 2px rgba(15, 45, 55, 0.1); }
+/* Pure-black "off" tiles and inset wells become soft grey-white so dimmed states read as dimmed */
+html.theme-light .bg-black { background-color: #f4f8fa; }
+html.theme-light .bg-black\/50 { background-color: rgba(15, 45, 55, 0.5); }
+/* Modal backdrops: a soft dim rather than a near-black wash */
+html.theme-light .backdrop-blur-sm.bg-slate-950\/80 { background-color: rgba(18, 38, 43, 0.45); }
+/* Circuit canvas: a clean paper-like grid area */
+html.theme-light .schematic-svg { filter: none; }
+html.theme-light select option { background-color: #ffffff; color: var(--color-slate-100); }
+html.theme-light input[type="range"] { accent-color: var(--color-sky-500); }
+html.theme-light * { scrollbar-color: var(--color-slate-700) transparent; }
+
+/* ---- Base (in @layer base so Tailwind utilities can still override) ----- */
+@layer base {
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01", "tnum" 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--color-slate-950);
+  color: var(--color-slate-100);
+}
+/* Numbers line up and don't jitter while the simulation animates */
+.font-mono {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "zero" 0, "calt" 0;
+}
+/* Headings and the wordmark use the same sans family as everything else */
+h1, h2, h3, .font-display {
+  font-family: var(--font-sans);
+}
+
+/* Form controls follow the palette */
+input[type="range"] { accent-color: var(--color-sky-400); }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--color-sky-500); }
+select, input, button, textarea { font-family: inherit; }
+select option {
+  background-color: var(--color-slate-900);
+  color: var(--color-slate-100);
+}
+:focus-visible {
+  outline: 2px solid var(--color-sky-400);
+  outline-offset: 2px;
+}
+
+/* Slim, palette-matched scrollbars */
+* { scrollbar-width: thin; scrollbar-color: var(--color-slate-700) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: var(--color-slate-700);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* Smooth theme switch (only colours; skipped for reduced-motion users) */
+@media (prefers-reduced-motion: no-preference) {
+  body, header, main, section, button, input, select, .theme-fade {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 180ms;
+    transition-timing-function: ease;
+  }
+}
+
+}
+
+/* ---- Animated current flow: marching dashes along every conducting wire ----
+   The dash phase (--flow-phase) is advanced by SchematicView's rAF loop, so speed follows the
+   playback speed, supply frequency and load current, and freezes when paused.
+   .cf-fwd moves dashes along the way the wire is drawn, .cf-rev against it (each wire is tagged
+   with the real direction of the current in it). */
+.cf { stroke-dasharray: 9 5; }
+.cf-fwd { stroke-dashoffset: calc(var(--flow-phase, 0) * -1px); }
+.cf-rev { stroke-dashoffset: calc(var(--flow-phase, 0) * 1px); }
+@media (prefers-reduced-motion: reduce) {
+  .cf { stroke-dasharray: none; }
+}
+
+/* ============================================================================
+ *  PRINT / PDF
+ *  Always prints with the LIGHT shades (saves ink, reads well on paper),
+ *  whichever theme is on screen. The canvas oscilloscope is redrawn in light
+ *  colours by ThemeContext (beforeprint → light, afterprint → restore).
+ * ============================================================================ */
+@page {
+  size: A4 landscape;
+  margin: 9mm;
+}
+@media print {
+  html, html.theme-light {
+    color-scheme: light;
+    --color-slate-50: #071517; --color-slate-100: #0f1f21; --color-slate-200: #1b2e30; --color-slate-300: #2c4244; --color-slate-400: #3e585b; --color-slate-500: #516d71;
+    --color-slate-600: #8da3a6; --color-slate-700: #bacbcd; --color-slate-800: #d4e3e5; --color-slate-900: #f8fefe; --color-slate-950: #ebf7f9;
+    --color-sky-50: #051a1c; --color-sky-100: #00292d; --color-sky-200: #00393f; --color-sky-300: #004d54; --color-sky-400: #006068; --color-sky-500: #026f78;
+    --color-sky-600: #00919d; --color-sky-700: #1db2c0; --color-sky-800: #57d2df; --color-sky-900: #8bf1fc; --color-sky-950: #c7f9ff;
+    --color-emerald-50: #091a13; --color-emerald-100: #072a1d; --color-emerald-200: #033c29; --color-emerald-300: #025139; --color-emerald-400: #006447; --color-emerald-500: #087453;
+    --color-emerald-600: #29956f; --color-emerald-700: #4cb58d; --color-emerald-800: #73d4ac; --color-emerald-900: #9ff3ce; --color-emerald-950: #c1ffe2;
+    --color-indigo-50: #0d1720; --color-indigo-100: #122534; --color-indigo-200: #18344b; --color-indigo-300: #214765; --color-indigo-400: #2b587c; --color-indigo-500: #34668f;
+    --color-indigo-600: #4d86b4; --color-indigo-700: #6aa5d6; --color-indigo-800: #8cc4f5; --color-indigo-900: #c2e2ff; --color-indigo-950: #e2f1fe;
+    --color-purple-50: #16151f; --color-purple-100: #222032; --color-purple-200: #312d48; --color-purple-300: #433e62; --color-purple-400: #534d78; --color-purple-500: #615a8a;
+    --color-purple-600: #7f78af; --color-purple-700: #9d96d0; --color-purple-800: #bcb5ef; --color-purple-900: #ddd9ff; --color-purple-950: #eeecfe;
+    --color-amber-50: #1d1506; --color-amber-100: #2f2002; --color-amber-200: #422d00; --color-amber-300: #583f00; --color-amber-400: #6d4e00; --color-amber-500: #7e5b03;
+    --color-amber-600: #a47805; --color-amber-700: #c59634; --color-amber-800: #e4b65e; --color-amber-900: #ffd891; --color-amber-950: #feeccc;
+    --color-red-50: #201210; --color-red-100: #351a18; --color-red-200: #4b2522; --color-red-300: #66322f; --color-red-400: #7d3f3b; --color-red-500: #8f4b46;
+    --color-red-600: #b66661; --color-red-700: #d8847d; --color-red-800: #f8a49d; --color-red-900: #fed2cd; --color-red-950: #fee9e6;
+    --color-pink-50: #1f1215; --color-pink-100: #321b20; --color-pink-200: #47262e; --color-pink-300: #60343f; --color-pink-400: #76424e; --color-pink-500: #884e5c;
+    --color-pink-600: #ad6979; --color-pink-700: #ce8797; --color-pink-800: #eea7b6; --color-pink-900: #fed0d9; --color-pink-950: #fee8ec;
+  }
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    animation: none !important;
+    transition: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+  html, body, #root, #root > div {
+    background: #ffffff !important;
+    color: var(--color-slate-100) !important;
+    min-height: 0 !important;
+  }
+  /* Shrink the on-screen layout so a whole lab (controls + schematic + scope) fits per page */
+  body { zoom: 0.62; }
+  /* UI chrome that makes no sense on paper */
+  .no-print { display: none !important; }
+  header {
+    position: static !important;
+    background: #ffffff !important;
+    border-bottom: 1.5px solid var(--color-slate-700) !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 4mm 0 0 !important;
+  }
+  /* Keep each card whole; start big ones on a fresh page rather than slicing them */
+  main > div, main > div > div, .print-keep {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .print-page-break { break-before: page; page-break-before: always; }
+  canvas, svg { max-width: 100% !important; height: auto; }
+  /* Cards: flat white with a clear hairline border */
+  main [class*="rounded-xl"] {
+    background-color: #ffffff !important;
+    border-color: var(--color-slate-700) !important;
+  }
+}
+
+/* Load symbol in the schematic fades in when the load type changes */
+@keyframes load-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.load-fade { animation: load-fade-in 350ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .load-fade { animation: none; } }
+
+/* Circuit schematic: normal height cap, lifted when the card is full screen */
+.schematic-svg { max-height: 310px; }
+.schematic-fs .schematic-svg { max-height: none; }
+@media print { .schematic-svg { max-height: 310px; } }
+
+/* Header identity (name · roll number): glowing text matching the logo's teal + amber */
+.id-glow { transition: text-shadow 0.3s ease, color 0.3s ease; }
+.id-glow-name {
+  color: var(--color-sky-300);
+  text-shadow:
+    0 0 4px color-mix(in srgb, var(--color-sky-400) 80%, transparent),
+    0 0 12px color-mix(in srgb, var(--color-sky-400) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-sky-400) 30%, transparent);
+}
+.id-glow-roll {
+  color: var(--color-amber-400);
+  text-shadow:
+    0 0 4px color-mix(in srgb, var(--color-amber-400) 80%, transparent),
+    0 0 12px color-mix(in srgb, var(--color-amber-400) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-amber-400) 30%, transparent);
+}
+.id-glow-dot {
+  width: 5px; height: 5px; border-radius: 9999px;
+  background: var(--color-amber-400);
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--color-amber-400) 70%, transparent);
+}
+header:hover .id-glow-name,
+header:hover .id-glow-roll { filter: brightness(1.12); }
+@media (prefers-reduced-motion: no-preference) {
+  .id-glow-roll { animation: id-glow-pulse 3.2s ease-in-out infinite; }
+  @keyframes id-glow-pulse {
+    0%, 100% { text-shadow: 0 0 4px color-mix(in srgb, var(--color-amber-400) 80%, transparent), 0 0 12px color-mix(in srgb, var(--color-amber-400) 55%, transparent), 0 0 24px color-mix(in srgb, var(--color-amber-400) 30%, transparent); }
+    50%      { text-shadow: 0 0 5px color-mix(in srgb, var(--color-amber-400) 95%, transparent), 0 0 16px color-mix(in srgb, var(--color-amber-400) 70%, transparent), 0 0 32px color-mix(in srgb, var(--color-amber-400) 40%, transparent); }
+  }
+}
+/* Light theme + print: keep the colour, drop the neon halo (it smears on bright backgrounds) */
+html.theme-light .id-glow-name,
+html.theme-light .id-glow-roll { text-shadow: 0 1px 0 rgba(255,255,255,0.6); animation: none; }
+html.theme-light .id-glow-dot { box-shadow: none; }
+@media print {
+  .id-glow-name, .id-glow-roll { text-shadow: none; animation: none; }
+  .id-glow-dot { box-shadow: none; }
+}
+
+/* ---- Smooth show/hide for sections that depend on a selection ----
+   Height animates 0 -> auto via grid rows (no JS measuring), content fades alongside.
+   `margin: 0 !important` cancels the parent's space-y gap while collapsed so no empty gap is left. */
+.collapse-row {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin: 0 !important;
+  transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease;
+}
+.collapse-row[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
+.collapse-row > div { overflow: hidden; min-height: 0; }
+
+/* Header converter chip: label softly fades in when the topology changes */
+@keyframes swap-fade-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.swap-fade { animation: swap-fade-in 260ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .collapse-row { transition: none; }
+  .swap-fade { animation: none; }
+}
+
+/* New load symbol fades in when the load chain changes (no blank gap, no stale symbol) */
+@keyframes load-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.load-fade-in { animation: load-fade-in 220ms ease-out both; }
+@media (prefers-reduced-motion: reduce) { .load-fade-in { animation: none; } }
+
+/* Topology dropdown: soft pop-in */
+@keyframes topology-pop { from { opacity: 0; transform: translateY(-6px) scale(0.985); } to { opacity: 1; transform: none; } }
+.topology-pop { transform-origin: top center; animation: topology-pop 140ms ease-out both; }
+@media (prefers-reduced-motion: reduce) { .topology-pop { animation: none; } }
+
+/* Circuit schematic: plain opacity fade when the topology changes (no scale / blur, so nothing moves or repaints heavily) */
+@keyframes schematic-fade { from { opacity: 0; } to { opacity: 1; } }
+.schematic-fade { animation: schematic-fade 320ms ease-out both; }
+@media (prefers-reduced-motion: reduce) { .schematic-fade { animation: none; } }

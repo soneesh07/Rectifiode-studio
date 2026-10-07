@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rectifiode Studio - AC-DC Converter Simulator</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0F766E" />
+    <meta name="description" content="Interactive browser-based power electronics simulator for single-phase and three-phase AC-DC rectifiers with numerical time-domain simulation, dynamic schematics, and oscilloscope waveforms." />
+    <meta property="og:title" content="Rectifiode Studio - AC-DC Converter Simulator" />
+    <meta property="og:description" content="Interactive browser-based power electronics simulator for single-phase and three-phase AC-DC rectifiers with numerical time-domain simulation, dynamic schematics, and oscilloscope waveforms." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      // Apply the saved theme (default: dark) before first paint → no flash on load.
+      (function () {
+        try {
+          var saved = localStorage.getItem('pe_studio_theme');
+          var theme = (saved === 'light' || saved === 'dark') ? saved : 'dark';
+          var root = document.documentElement;
+          root.classList.toggle('theme-light', theme === 'light');
+          root.classList.toggle('dark', theme === 'dark');
+        } catch (e) { document.documentElement.classList.add('dark'); }
+      })();
+    </script>
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-amber-400 selection:text-slate-950">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

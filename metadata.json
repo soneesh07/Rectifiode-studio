@@ -1,0 +1,6 @@
+{
+  "name": "Rectifiode Studio - AC-DC Converter Simulator",
+  "description": "Interactive browser-based power electronics simulator for single-phase and three-phase AC-DC rectifiers with numerical time-domain simulation, dynamic schematics, and oscilloscope waveforms.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

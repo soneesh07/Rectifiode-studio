@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Rectifiode Studio</title>
+  <defs>
+    <filter id="glow" x="-60%" y="-30%" width="220%" height="160%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#0F766E"/>
+  <path d="M70 256 H163 M361 256 H442" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <polygon points="163,151 163,361 337,256" fill="#FFFFFF"/>
+  <path d="M361 151 V361" stroke="#FBBF24" stroke-width="29" stroke-linecap="round" fill="none" filter="url(#glow)"/>
+</svg>
