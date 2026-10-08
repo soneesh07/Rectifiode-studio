@@ -74,7 +74,7 @@ const Module: React.FC<ModuleProps> = ({ active, locked, symbol, name, hint, gly
     />
     <span className="flex flex-col leading-tight min-w-0">
       <span className="font-mono text-sm font-bold">{symbol}</span>
-      <span className="text-[12px] opacity-80 truncate">{name}</span>
+      <span className="text-[12px] opacity-80 truncate" title={name === 'Battery' ? 'Battery / EMF' : name}>{name}</span>
     </span>
     <span className={`self-center shrink-0 transition-opacity duration-300 ease-out ${active ? 'opacity-100' : 'opacity-30'}`}>
       {glyph}
@@ -119,11 +119,11 @@ export const LoadFwdSelector: React.FC<LoadFwdSelectorProps> = ({
     : 'DC motor / machine';
 
   return (
-    <div className="w-full shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,0.9fr)] gap-3 rounded-xl border border-slate-800 bg-slate-950/70 backdrop-blur p-2.5">
+    <div className="w-full shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(7.5rem,0.9fr)] gap-3 rounded-xl border border-slate-800 bg-slate-950/70 backdrop-blur p-2.5">
       {/* ---- Load chain builder ---- */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[12px] font-mono uppercase tracking-wider text-slate-400">Load chain</span>
+          <span className="text-[12px] font-mono uppercase tracking-wider text-slate-400 whitespace-nowrap">Load chain</span>
           <span className="font-mono text-xs font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">
             {label}
           </span>
@@ -152,7 +152,7 @@ export const LoadFwdSelector: React.FC<LoadFwdSelectorProps> = ({
           active={hasE}
           locked={hasE && count === 1}
           symbol="E"
-          name="Battery / EMF"
+          name="Battery"
           hint="+ Add battery"
           glyph={<BatteryGlyph />}
           onClick={() => setModules(hasR, hasL, !hasE)}
@@ -206,7 +206,7 @@ export const LoadFwdSelector: React.FC<LoadFwdSelectorProps> = ({
       {/* ---- Half-controlled bridge arrangement (boxed like the D_FW bypass; dimmed + locked unless semi-controlled) ---- */}
       {onSemiConfigChange && (
         <div className="pt-2.5 border-t border-slate-800 sm:pt-0 sm:border-t-0 lg:border-l lg:pl-3">
-          <span className="block mb-1.5 text-[12px] font-mono uppercase tracking-wider text-slate-400">Bridge arrangement</span>
+          <span className="block mb-1.5 text-[12px] font-mono uppercase tracking-wider text-slate-400">Bridge mode</span>
           <div
             aria-disabled={!semiEnabled}
             inert={!semiEnabled}
@@ -246,8 +246,8 @@ export const LoadFwdSelector: React.FC<LoadFwdSelectorProps> = ({
       {/* ---- Load summary ---- */}
       {R !== undefined && (
         <div className="pt-2.5 border-t border-slate-800 sm:pt-0 sm:border-t-0 lg:border-l lg:pl-3">
-          <span className="block mb-1.5 text-[12px] font-mono uppercase tracking-wider text-slate-400">Load values</span>
-          <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-xs">
+          <span className="block mb-1.5 text-[12px] font-mono uppercase tracking-wider text-slate-400 whitespace-nowrap">Load values</span>
+          <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-xs whitespace-nowrap">
             <dt className="text-slate-500">{hasR ? 'R' : 'Rp'}</dt>
             <dd className="text-right text-emerald-300">{R} Ω</dd>
             {/* Rows for modules that are not in the chain stay in the layout (invisible) so the panel keeps a constant height */}
