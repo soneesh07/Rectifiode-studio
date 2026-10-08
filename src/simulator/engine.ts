@@ -285,7 +285,11 @@ export function runSimulation(params: SimulationParams): SimulationResult {
   let lastBoundaryCurrent = -1;
 
   // State variables. Seed the current near its expected average so L/R transients are short.
-  const iSeedEstimate = L > 0 && theoreticalVdc !== undefined ? Math.max(0, (theoreticalVdc - E) / R) : 0;
+  // Exception: a single-phase half-wave circuit with a reversed EMF (E < 0) can latch into a continuous-current
+  // state it could never reach from rest (the SCR/diode simply never gets to turn off). Start those from rest.
+  const startFromRest = (topologyId === '1ph_hw_thyristor' || topologyId === '1ph_hw_diode') && E < 0;
+  const iSeedEstimate =
+    L > 0 && theoreticalVdc !== undefined && !startFromRest ? Math.max(0, (theoreticalVdc - E) / R) : 0;
   const convergenceTol = 1e-6 * Math.max(1, iSeedEstimate);
   let iLoad = iSeedEstimate;
   let activeState = 'NONE'; // string state tag
@@ -303,6 +307,25 @@ export function runSimulation(params: SimulationParams): SimulationResult {
     if (diff < 0) diff += 2 * Math.PI;
     return diff >= 0 && diff <= pulseWidthRad;
   };
+
+  // "Held" gate drive for the firing LOGIC (the displayed gate pulses above stay 15 deg wide).
+  // A thyristor only latches once it is forward biased. With a back-EMF E > 0 that happens at
+  // delta = asin(E/Vm), which can be later than alpha + 15 deg. A real gate driver keeps the gate on
+  // (wide pulse / pulse train) until the device turns on, so firing is allowed anywhere inside the
+  // window [trigger, trigger + span]; the span never reaches the next device's own window.
+  const isGateHeld = (currentThetaRad: number, triggerAngleRad: number, spanRad: number) => {
+    let modTheta = currentThetaRad % (2 * Math.PI);
+    if (modTheta < 0) modTheta += 2 * Math.PI;
+    let target = triggerAngleRad % (2 * Math.PI);
+    if (target < 0) target += 2 * Math.PI;
+    let diff = modTheta - target;
+    if (diff < 0) diff += 2 * Math.PI;
+    return diff <= Math.max(pulseWidthRad, spanRad);
+  };
+  // Single-phase: from alpha to the end of that half-cycle. Three-phase: up to the next device.
+  const holdSpan1ph = Math.PI - alphaRad;
+  const holdSpan3phSingle = (2 * Math.PI) / 3;
+  const holdSpan3phPair = Math.PI / 3;
 
   const recordedSamples: SimulationSample[] = [];
 
@@ -406,7 +429,7 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         const g1 = isGateFired(theta, alphaRad);
         gatePulses['T1'] = g1;
 
-        if (g1 && vsA > E) {
+        if (isGateHeld(theta, alphaRad, holdSpan1ph) && vsA > E) {
           activeState = 'T1';
         }
 
@@ -433,9 +456,9 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         gatePulses['T3'] = g34;
         gatePulses['T4'] = g34;
 
-        if (g12 && (vsA > E || iLoad > 1e-4)) {
+        if (isGateHeld(theta, alphaRad, holdSpan1ph) && (vsA > E || iLoad > 1e-4)) {
           activeState = 'PAIR_A'; // T1 & T2
-        } else if (g34 && (-vsA > E || iLoad > 1e-4)) {
+        } else if (isGateHeld(theta, Math.PI + alphaRad, holdSpan1ph) && (-vsA > E || iLoad > 1e-4)) {
           activeState = 'PAIR_B'; // T3 & T4
         }
 
@@ -488,9 +511,9 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         // -----------------------------------------------------------------
         if (semiConfig === 'asymmetric') {
           // An SCR needs a forward-biased anode: T1 can only fire while vs > 0, T2 while vs < 0.
-          if (g1 && vsA > 0 && (vsA > E || iLoad > 1e-4)) {
+          if (isGateHeld(theta, alphaRad, holdSpan1ph) && vsA > 0 && (vsA > E || iLoad > 1e-4)) {
             activeState = 'T1_D2';
-          } else if (g2 && vsA < 0 && (-vsA > E || iLoad > 1e-4)) {
+          } else if (isGateHeld(theta, Math.PI + alphaRad, holdSpan1ph) && vsA < 0 && (-vsA > E || iLoad > 1e-4)) {
             activeState = 'T2_D1';
           }
 
@@ -532,9 +555,9 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         //   Freewheeling: T1 + D1 (after +half) or T2 + D2 (after -half),
         //   i.e. an SCR and the diode of the SAME leg; the SCR keeps conducting.
         // -----------------------------------------------------------------
-        if (g1 && (vsA > E || iLoad > 1e-4)) {
+        if (isGateHeld(theta, alphaRad, holdSpan1ph) && (vsA > E || iLoad > 1e-4)) {
           activeState = 'T1_D2';
-        } else if (g2 && (-vsA > E || iLoad > 1e-4)) {
+        } else if (isGateHeld(theta, Math.PI + alphaRad, holdSpan1ph) && (-vsA > E || iLoad > 1e-4)) {
           activeState = 'T2_D1';
         }
 
@@ -640,6 +663,12 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         if (g1 && (vsA > E || iLoad > 1e-4)) activeState = 'T1';
         else if (g2 && (vsB > E || iLoad > 1e-4)) activeState = 'T2';
         else if (g3 && (vsC > E || iLoad > 1e-4)) activeState = 'T3';
+        else if (iLoad <= 1e-4) {
+          // Idle (DCM): the held gate fires whichever device becomes forward biased inside its own window
+          if (isGateHeld(theta, trigA, holdSpan3phSingle) && vsA > E) activeState = 'T1';
+          else if (isGateHeld(theta, trigB, holdSpan3phSingle) && vsB > E) activeState = 'T2';
+          else if (isGateHeld(theta, trigC, holdSpan3phSingle) && vsC > E) activeState = 'T3';
+        }
 
         if (activeState === 'T1') {
           vAppliedToLoad = vsA;
@@ -742,6 +771,11 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         if (g1) activeState = 'T1';
         else if (g3) activeState = 'T3';
         else if (g5) activeState = 'T5';
+        else if (iLoad <= 1e-4) {
+          if (isGateHeld(theta, trigA, holdSpan3phSingle) && vsA - botMin > E) activeState = 'T1';
+          else if (isGateHeld(theta, trigB, holdSpan3phSingle) && vsB - botMin > E) activeState = 'T3';
+          else if (isGateHeld(theta, trigC, holdSpan3phSingle) && vsC - botMin > E) activeState = 'T5';
+        }
 
         for (const lbl of ['T1', 'T3', 'T5', 'D2', 'D4', 'D6']) {
           deviceStates[lbl] = { conducting: false, current: 0, anodeToCathodeVoltage: 0 };
@@ -821,6 +855,14 @@ export function runSimulation(params: SimulationParams): SimulationResult {
         else if (isGateFired(theta, p4)) activeState = 'T3_T4';
         else if (isGateFired(theta, p5)) activeState = 'T5_T4';
         else if (isGateFired(theta, p6)) activeState = 'T5_T6';
+        else if (iLoad <= 1e-4) {
+          if (isGateHeld(theta, p1, holdSpan3phPair) && vLineAB > E) activeState = 'T1_T6';
+          else if (isGateHeld(theta, p2, holdSpan3phPair) && -vLineCA > E) activeState = 'T1_T2';
+          else if (isGateHeld(theta, p3, holdSpan3phPair) && vLineBC > E) activeState = 'T3_T2';
+          else if (isGateHeld(theta, p4, holdSpan3phPair) && -vLineAB > E) activeState = 'T3_T4';
+          else if (isGateHeld(theta, p5, holdSpan3phPair) && vLineCA > E) activeState = 'T5_T4';
+          else if (isGateHeld(theta, p6, holdSpan3phPair) && -vLineBC > E) activeState = 'T5_T6';
+        }
 
         for (const lbl of ['T1', 'T2', 'T3', 'T4', 'T5', 'T6']) {
           deviceStates[lbl] = { conducting: false, current: 0, anodeToCathodeVoltage: 0 };

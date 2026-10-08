@@ -24,6 +24,34 @@ interface ControlPanelProps {
   onChangeParams: (newParams: SimulationParams) => void;
 }
 
+/**
+ * Tick labels that sit exactly under their value on a range input.
+ * Native range thumbs travel (width - thumbWidth), so each label is offset to follow the thumb centre;
+ * the first/last labels are pinned to the edges. Every tick is clickable and sets that value.
+ */
+const THUMB_PX = 16;
+interface Tick { value: number; label: React.ReactNode; onPick?: () => void; }
+const Ticks: React.FC<{ min: number; max: number; ticks: Tick[]; disabled?: boolean }> = ({ min, max, ticks, disabled }) => (
+  <div className="relative h-4 mt-1 text-[12px] text-slate-500 select-none">
+    {ticks.map((t, i) => {
+      const p = ((t.value - min) / (max - min)) * 100;
+      const style: React.CSSProperties =
+        p <= 0 ? { left: 0 } : p >= 100 ? { right: 0 } : { left: `calc(${p}% + ${(0.5 - p / 100) * THUMB_PX}px)`, transform: 'translateX(-50%)' };
+      return (
+        <span key={i} className="absolute top-0 whitespace-nowrap leading-4" style={style}>
+          {t.onPick && !disabled ? (
+            <button type="button" onClick={t.onPick} className="cursor-pointer hover:text-slate-200 transition-colors">
+              {t.label}
+            </button>
+          ) : (
+            t.label
+          )}
+        </span>
+      );
+    })}
+  </div>
+);
+
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   params,
   onChangeParams,
@@ -93,12 +121,11 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(e) => updateParam('vRms', Number(e.target.value))}
               className="w-full accent-amber-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[12px] text-slate-500 mt-0.5">
-              <span>24V</span>
-              <span>120V</span>
-              <span>230V</span>
-              <span>480V</span>
-            </div>
+            <Ticks
+              min={24}
+              max={480}
+              ticks={[24, 120, 230, 480].map((v) => ({ value: v, label: `${v}V`, onPick: () => updateParam('vRms', v) }))}
+            />
           </div>
 
           {/* Frequency */}
@@ -116,22 +143,35 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(e) => updateParam('frequency', Number(e.target.value))}
               className="w-full accent-amber-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
             />
-            <div className="flex gap-1.5 mt-1">
-              {[50, 60, 400].map((hz) => (
-                <button
-                  key={hz}
-                  type="button"
-                  onClick={() => updateParam('frequency', hz)}
-                  className={`flex-1 py-0.5 text-[12px] font-mono rounded border transition-colors ${
-                    params.frequency === hz
-                      ? 'bg-slate-700 border-amber-500 text-amber-300 font-bold'
-                      : 'border-slate-800 text-slate-400 hover:bg-slate-800'
-                  }`}
-                >
-                  {hz}Hz
-                </button>
-              ))}
-            </div>
+            <Ticks
+              min={20}
+              max={400}
+              ticks={[
+                { value: 20, label: '20Hz', onPick: () => updateParam('frequency', 20) },
+                {
+                  value: 55,
+                  label: (
+                    <span className="inline-flex items-center gap-0.5">
+                      {[50, 60].map((hz, k) => (
+                        <React.Fragment key={hz}>
+                          {k > 0 && <span className="text-slate-600">/</span>}
+                          <button
+                            type="button"
+                            onClick={() => updateParam('frequency', hz)}
+                            className={`cursor-pointer hover:text-slate-200 transition-colors ${params.frequency === hz ? 'text-amber-300 font-bold' : ''}`}
+                          >
+                            {hz}
+                          </button>
+                        </React.Fragment>
+                      ))}
+                      <span>Hz</span>
+                    </span>
+                  ),
+                },
+                { value: 200, label: '200Hz', onPick: () => updateParam('frequency', 200) },
+                { value: 400, label: '400Hz', onPick: () => updateParam('frequency', 400) },
+              ]}
+            />
           </div>
         </div>
 
@@ -184,16 +224,23 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               <div className="grid mt-1 text-[12px] font-mono">
                 <div
                   aria-hidden={!active}
-                  className={`col-start-1 row-start-1 flex justify-between text-slate-400 transition-opacity duration-300 ${
+                  className={`col-start-1 row-start-1 text-slate-400 transition-opacity duration-300 ${
                     active ? 'opacity-100' : 'opacity-0'
                   }`}
                 >
-                  <span>0° (Diode)</span>
-                  <span>30°</span>
-                  <span>60°</span>
-                  <span>90° (0V DC)</span>
-                  <span>120°</span>
-                  <span>180°</span>
+                  <Ticks
+                    min={0}
+                    max={180}
+                    disabled={!active}
+                    ticks={[
+                      { value: 0, label: '0° (Diode)', onPick: () => updateParam('alpha', 0) },
+                      { value: 30, label: '30°', onPick: () => updateParam('alpha', 30) },
+                      { value: 60, label: '60°', onPick: () => updateParam('alpha', 60) },
+                      { value: 90, label: '90° (0V DC)', onPick: () => updateParam('alpha', 90) },
+                      { value: 120, label: '120°', onPick: () => updateParam('alpha', 120) },
+                      { value: 180, label: '180°', onPick: () => updateParam('alpha', 180) },
+                    ]}
+                  />
                 </div>
                 <div
                   aria-hidden={active}
@@ -260,11 +307,11 @@ export const LoadParametersPanel: React.FC<ControlPanelProps> = ({
             onChange={(e) => updateParam('R', Number(e.target.value))}
             className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
           />
-          <div className="flex justify-between text-[12px] text-slate-500 mt-0.5">
-            <span>1 Ω</span>
-            <span>50 Ω</span>
-            <span>100 Ω</span>
-          </div>
+          <Ticks
+            min={1}
+            max={100}
+            ticks={[{ value: 1, label: '1 Ω' }, { value: 50, label: '50 Ω' }, { value: 100, label: '100 Ω' }]}
+          />
         </div>
 
         {/* Inductor L — always rendered, dimmed when not in the load */}
@@ -293,11 +340,11 @@ export const LoadParametersPanel: React.FC<ControlPanelProps> = ({
             onChange={(e) => updateParam('L', Number(e.target.value))}
             className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer disabled:cursor-not-allowed"
           />
-          <div className="flex justify-between text-[12px] text-slate-500 mt-0.5">
-            <span>0 mH</span>
-            <span>100 mH</span>
-            <span>200 mH</span>
-          </div>
+          <Ticks
+            min={0}
+            max={0.2}
+            ticks={[{ value: 0, label: '0 mH' }, { value: 0.1, label: '100 mH' }, { value: 0.2, label: '200 mH' }]}
+          />
         </div>
 
         {/* DC Battery EMF E — always rendered, dimmed when not in the load */}
@@ -325,11 +372,11 @@ export const LoadParametersPanel: React.FC<ControlPanelProps> = ({
             onChange={(e) => updateParam('E', Number(e.target.value))}
             className="w-full accent-emerald-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer disabled:cursor-not-allowed"
           />
-          <div className="flex justify-between text-[12px] text-slate-500 mt-0.5">
-            <span>-150 V</span>
-            <span>0 V</span>
-            <span>150 V</span>
-          </div>
+          <Ticks
+            min={-150}
+            max={150}
+            ticks={[{ value: -150, label: '-150 V' }, { value: 0, label: '0 V' }, { value: 150, label: '150 V' }]}
+          />
         </div>
       </div>
     </div>
