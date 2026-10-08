@@ -105,7 +105,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
 
         {/* Input AC Voltage & Frequency Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 items-start pt-2 border-t border-slate-800/80">
           {/* RMS Input Voltage */}
           <div>
             <div className="flex justify-between items-center text-xs mb-1">
@@ -148,30 +148,26 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               max={400}
               ticks={[
                 { value: 20, label: '20Hz', onPick: () => updateParam('frequency', 20) },
-                {
-                  value: 55,
-                  label: (
-                    <span className="inline-flex items-center gap-0.5">
-                      {[50, 60].map((hz, k) => (
-                        <React.Fragment key={hz}>
-                          {k > 0 && <span className="text-slate-600">/</span>}
-                          <button
-                            type="button"
-                            onClick={() => updateParam('frequency', hz)}
-                            className={`cursor-pointer hover:text-slate-200 transition-colors ${params.frequency === hz ? 'text-amber-300 font-bold' : ''}`}
-                          >
-                            {hz}
-                          </button>
-                        </React.Fragment>
-                      ))}
-                      <span>Hz</span>
-                    </span>
-                  ),
-                },
                 { value: 200, label: '200Hz', onPick: () => updateParam('frequency', 200) },
                 { value: 400, label: '400Hz', onPick: () => updateParam('frequency', 400) },
               ]}
             />
+            <div className="flex items-center gap-1.5 mt-1.5">
+              {[50, 60, 400].map((hz) => (
+                <button
+                  key={hz}
+                  type="button"
+                  onClick={() => updateParam('frequency', hz)}
+                  className={`px-2 py-0.5 rounded-md border text-[11px] font-mono transition-colors cursor-pointer ${
+                    params.frequency === hz
+                      ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-bold'
+                      : 'border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                  }`}
+                >
+                  {hz} Hz
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
