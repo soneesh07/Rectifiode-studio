@@ -175,7 +175,7 @@ export default function App() {
               return {
                 ...prev,
                 loadType: composeLoad(prev.loadType.includes('R'), true, prev.loadType.includes('E')),
-                L: Math.max(0.08, prev.L * 3), // high inductance → continuous current
+                L: Math.min(0.2, Math.max(0.08, prev.L * 3)), // high inductance → continuous current (capped at the L slider's 200 mH max)
               };
             }
             if (kind === 'dcm') {
