@@ -64,7 +64,8 @@ export const CharacteristicsCurvePanel: React.FC<CharacteristicsCurvePanelProps>
           break;
         case '3ph_hw_thyristor':
           if (hasFwd && a > 30) {
-            v = (3 * Vm) / (2 * Math.PI) * (1 + Math.cos(aRad + Math.PI / 6));
+            // Beyond alpha = 150 deg the phase voltage never turns positive after the trigger: no conduction.
+            v = a >= 150 ? 0 : (3 * Vm) / (2 * Math.PI) * (1 + Math.cos(aRad + Math.PI / 6));
           } else {
             v = (3 * Math.sqrt(3) * Vm) / (2 * Math.PI) * Math.cos(aRad);
           }
@@ -77,7 +78,8 @@ export const CharacteristicsCurvePanel: React.FC<CharacteristicsCurvePanelProps>
           break;
         case '3ph_fw_fully_controlled':
           if (hasFwd && a > 60) {
-            v = (3 * VmLine) / Math.PI * (1 + Math.cos(aRad + Math.PI / 3));
+            // Beyond alpha = 120 deg the line voltage never turns positive after the trigger: no conduction.
+            v = a >= 120 ? 0 : (3 * VmLine) / Math.PI * (1 + Math.cos(aRad + Math.PI / 3));
           } else {
             v = (3 * VmLine) / Math.PI * Math.cos(aRad);
           }

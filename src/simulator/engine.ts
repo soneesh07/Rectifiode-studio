@@ -524,10 +524,11 @@ export function runSimulation(params: SimulationParams): SimulationResult {
               // Source is feeding the load through the fired SCR and the diagonal diode
               vAppliedToLoad = posPair ? vsA : -vsA;
               activeBranchDesc = posPair ? 'T1, D2 Conducting (+ Half-Cycle)' : 'T2, D1 Conducting (- Half-Cycle)';
-              deviceStates['T1'] = { conducting: posPair, current: iLoad, anodeToCathodeVoltage: posPair ? 0 : vsA };
-              deviceStates['T2'] = { conducting: !posPair, current: iLoad, anodeToCathodeVoltage: posPair ? -vsA : 0 };
-              deviceStates['D1'] = { conducting: !posPair, current: iLoad, anodeToCathodeVoltage: posPair ? -vsA : 0 };
-              deviceStates['D2'] = { conducting: posPair, current: iLoad, anodeToCathodeVoltage: posPair ? 0 : vsA };
+              // Only the conducting diagonal carries the load current; the other pair is off (0 A).
+              deviceStates['T1'] = { conducting: posPair, current: posPair ? iLoad : 0, anodeToCathodeVoltage: posPair ? 0 : vsA };
+              deviceStates['T2'] = { conducting: !posPair, current: !posPair ? iLoad : 0, anodeToCathodeVoltage: posPair ? -vsA : 0 };
+              deviceStates['D1'] = { conducting: !posPair, current: !posPair ? iLoad : 0, anodeToCathodeVoltage: posPair ? -vsA : 0 };
+              deviceStates['D2'] = { conducting: posPair, current: posPair ? iLoad : 0, anodeToCathodeVoltage: posPair ? 0 : vsA };
             } else {
               // Source reversed: SCR commutates off, load current freewheels through D1 + D2
               vAppliedToLoad = 0;
@@ -542,8 +543,9 @@ export function runSimulation(params: SimulationParams): SimulationResult {
             activeBranchDesc = 'Blocking (DCM Mode)';
             deviceStates['T1'] = { conducting: false, current: 0, anodeToCathodeVoltage: vsA - E };
             deviceStates['T2'] = { conducting: false, current: 0, anodeToCathodeVoltage: -vsA - E };
-            deviceStates['D1'] = { conducting: false, current: 0, anodeToCathodeVoltage: -vsA };
-            deviceStates['D2'] = { conducting: false, current: 0, anodeToCathodeVoltage: vsA };
+            // Each diode is in series with a blocking SCR, which holds the forward voltage: diodes only show reverse voltage.
+            deviceStates['D1'] = { conducting: false, current: 0, anodeToCathodeVoltage: Math.min(0, -vsA) };
+            deviceStates['D2'] = { conducting: false, current: 0, anodeToCathodeVoltage: Math.min(0, vsA) };
           }
           break;
         }
@@ -603,8 +605,9 @@ export function runSimulation(params: SimulationParams): SimulationResult {
           activeBranchDesc = 'Blocking (DCM Mode)';
           deviceStates['T1'] = { conducting: false, current: 0, anodeToCathodeVoltage: vsA - E };
           deviceStates['T2'] = { conducting: false, current: 0, anodeToCathodeVoltage: -vsA - E };
-          deviceStates['D1'] = { conducting: false, current: 0, anodeToCathodeVoltage: -vsA };
-          deviceStates['D2'] = { conducting: false, current: 0, anodeToCathodeVoltage: vsA };
+          // Each diode is in series with a blocking SCR, which holds the forward voltage: diodes only show reverse voltage.
+          deviceStates['D1'] = { conducting: false, current: 0, anodeToCathodeVoltage: Math.min(0, -vsA) };
+          deviceStates['D2'] = { conducting: false, current: 0, anodeToCathodeVoltage: Math.min(0, vsA) };
         }
         break;
       }
