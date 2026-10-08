@@ -507,13 +507,13 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = tc('slate-400');
         ctx.font = 'bold 10px JetBrains Mono, monospace';
-        ctx.fillText('V_src [V]', paddingLeft - 8, panelTop + 12);
+        ctx.fillText('V_src [V]', paddingLeft - 8, panelTop + 9);
 
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
-        ctx.fillText(`+${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY - panelHeight * 0.36);
+        ctx.fillText(`+${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY - panelHeight * 0.36 + 3);
         ctx.fillText('0 V', paddingLeft - 8, panelCenterY + 3);
-        ctx.fillText(`-${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY + panelHeight * 0.36);
+        ctx.fillText(`-${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY + panelHeight * 0.36 + 3);
 
         // Zero reference tick mark
         ctx.fillStyle = tc('slate-500');
@@ -590,13 +590,13 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = tc('slate-400');
         ctx.font = 'bold 10px JetBrains Mono, monospace';
-        ctx.fillText('I_src [A]', paddingLeft - 8, panelTop + 12);
+        ctx.fillText('I_src [A]', paddingLeft - 8, panelTop + 9);
 
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
-        ctx.fillText(`+${maxIs.toFixed(1)} A`, paddingLeft - 8, panelCenterY - panelHeight * 0.36);
+        ctx.fillText(`+${maxIs.toFixed(1)} A`, paddingLeft - 8, panelCenterY - panelHeight * 0.36 + 3);
         ctx.fillText('0 A', paddingLeft - 8, panelCenterY + 3);
-        ctx.fillText(`-${maxIs.toFixed(1)} A`, paddingLeft - 8, panelCenterY + panelHeight * 0.36);
+        ctx.fillText(`-${maxIs.toFixed(1)} A`, paddingLeft - 8, panelCenterY + panelHeight * 0.36 + 3);
 
         // Zero tick
         ctx.fillStyle = tc('slate-500');
@@ -712,13 +712,13 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = tc('slate-400');
         ctx.font = 'bold 10px JetBrains Mono, monospace';
-        ctx.fillText('V_out [V]', paddingLeft - 8, panelTop + 12);
+        ctx.fillText('V_out [V]', paddingLeft - 8, panelTop + 9);
 
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
-        ctx.fillText(`+${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY - panelHeight * 0.36);
+        ctx.fillText(`+${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY - panelHeight * 0.36 + 3);
         ctx.fillText('0 V', paddingLeft - 8, panelCenterY + 3);
-        ctx.fillText(`-${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY + panelHeight * 0.36);
+        ctx.fillText(`-${maxV.toFixed(0)} V`, paddingLeft - 8, panelCenterY + panelHeight * 0.36 + 3);
 
         // Zero tick
         ctx.fillStyle = tc('slate-500');
@@ -789,11 +789,11 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = tc('slate-400');
         ctx.font = 'bold 10px JetBrains Mono, monospace';
-        ctx.fillText('I_out [A]', paddingLeft - 8, panelTop + 12);
+        ctx.fillText('I_out [A]', paddingLeft - 8, panelTop + 9);
 
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
-        ctx.fillText(`+${maxI.toFixed(1)} A`, paddingLeft - 8, panelTop + 24);
+        ctx.fillText(`+${maxI.toFixed(1)} A`, paddingLeft - 8, panelTop + 29);
         ctx.fillText('0 A', paddingLeft - 8, baseZeroY + 3);
 
         // Zero tick
@@ -865,7 +865,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = tc('slate-400');
         ctx.font = 'bold 10px JetBrains Mono, monospace';
-        ctx.fillText('I_dev [A]', paddingLeft - 8, panelTop + 12);
+        ctx.fillText('I_dev [A]', paddingLeft - 8, panelTop + 9);
 
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
@@ -883,7 +883,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
-        ctx.fillText(`+${(devMaxI * 1.15).toFixed(1)} A`, paddingLeft - 8, panelTop + 24);
+        ctx.fillText(`+${(devMaxI * 1.15).toFixed(1)} A`, paddingLeft - 8, panelTop + 29);
 
         shownDevKeys.forEach((key) => {
           ctx.strokeStyle = devColor(key);
@@ -922,7 +922,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
         ctx.textAlign = 'right';
         ctx.fillStyle = COLORS.text;
         ctx.font = '10px JetBrains Mono, monospace';
-        ctx.fillText(`+${devMaxV.toFixed(0)} V`, paddingLeft - 8, panelTop + 24);
+        ctx.fillText(`+${devMaxV.toFixed(0)} V`, paddingLeft - 8, panelTop + 29);
         ctx.fillText('0 V', paddingLeft - 8, panelCenterY + 3);
         ctx.fillText(`-${devMaxV.toFixed(0)} V`, paddingLeft - 8, panelBottom - 6);
 
@@ -1202,7 +1202,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           <button
             onClick={() => setShowSource(!showSource)}
             className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-              showSource ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'text-slate-500 hover:bg-slate-800'
+              showSource ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
             }`}
           >
             v_s(t)
@@ -1210,7 +1210,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           <button
             onClick={() => setShowIsource(!showIsource)}
             className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-              showIsource ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'text-slate-500 hover:bg-slate-800'
+              showIsource ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
             }`}
           >
             i_s(t)
@@ -1219,7 +1219,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
             <button
               onClick={() => setShowGates(!showGates)}
               className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-                showGates ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 hover:bg-slate-800'
+                showGates ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
               }`}
             >
               Gate(α)
@@ -1230,7 +1230,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
               onClick={() => setShowFiringMarks(!showFiringMarks)}
               title="Mark every firing instant on all panels"
               className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-                showFiringMarks ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 hover:bg-slate-800'
+                showFiringMarks ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
               }`}
             >
               Fire
@@ -1239,7 +1239,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           <button
             onClick={() => setShowVout(!showVout)}
             className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-              showVout ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-500 hover:bg-slate-800'
+              showVout ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
             }`}
           >
             v_o(t)
@@ -1247,7 +1247,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           <button
             onClick={() => setShowIout(!showIout)}
             className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-              showIout ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:bg-slate-800'
+              showIout ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
             }`}
           >
             i_o(t)
@@ -1255,7 +1255,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           <button
             onClick={() => setShowDeviceCurrents(!showDeviceCurrents)}
             className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-              showDeviceCurrents ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30' : 'text-slate-500 hover:bg-slate-800'
+              showDeviceCurrents ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
             }`}
           >
             i_sw(t)
@@ -1263,7 +1263,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
           <button
             onClick={() => setShowDeviceVoltages(!showDeviceVoltages)}
             className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-              showDeviceVoltages ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-slate-500 hover:bg-slate-800'
+              showDeviceVoltages ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
             }`}
           >
             v_AK(t)
@@ -1273,7 +1273,7 @@ export const Oscilloscope: React.FC<OscilloscopeProps> = ({
               onClick={() => setShowReference(!showReference)}
               title="Show or hide the pinned reference waveforms"
               className={`px-2 py-0.5 rounded text-[13px] font-mono transition-colors ${
-                showReference ? 'bg-slate-500/25 text-slate-300 border border-slate-500/40' : 'text-slate-500 hover:bg-slate-800'
+                showReference ? 'bg-slate-500/25 text-slate-300 border border-slate-500/40' : 'text-slate-500 border border-slate-700/70 hover:bg-slate-800 hover:text-slate-300'
               }`}
             >
               Ref
