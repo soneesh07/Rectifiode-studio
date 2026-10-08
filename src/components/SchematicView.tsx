@@ -980,7 +980,7 @@ export const SchematicView: React.FC<SchematicViewProps> = ({
             V
           </text>
           {/* Label + readout outside the dial */}
-          <text x="0" y="-26" fill="var(--color-slate-400)" fontSize="10" fontWeight="bold" fontFamily="JetBrains Mono, monospace" textAnchor="middle">
+          <text x="0" y="-26" fill="var(--color-slate-400)" stroke="var(--color-slate-900)" strokeWidth="4" strokeLinejoin="round" paintOrder="stroke" fontSize="10" fontWeight="bold" fontFamily="JetBrains Mono, monospace" textAnchor="middle">
             V_LOAD
           </text>
           {/* Bottom metering probe lead */}
@@ -2220,12 +2220,12 @@ export const SchematicView: React.FC<SchematicViewProps> = ({
         <div className="flex items-center gap-2 text-slate-300 min-w-0 flex-1">
           <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
           <span className="font-semibold text-slate-200 shrink-0">Conducting Loop:</span>
-          <span className="font-mono text-emerald-400 truncate">{activeBranchDesc}</span>
+          <span className="font-mono text-emerald-400 truncate" title={activeBranchDesc}>{activeBranchDesc}</span>
         </div>
 
         {/* Live Active Switches Badges (left-aligned in a fixed-width slot) */}
         <div className="flex items-center gap-1.5 text-[13px] font-mono shrink-0 whitespace-nowrap">
-          <span className="text-slate-500 mr-1 hidden sm:inline">Active Devices:</span>
+          <span className="sr-only">Active devices:</span>
           <div className="flex items-center justify-start gap-1.5 sm:w-[13.5rem] overflow-hidden">
             {activeSwitchesList.length > 0 ? (
               activeSwitchesList.map(([key, s]) => (

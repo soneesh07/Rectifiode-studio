@@ -119,7 +119,7 @@ export const LoadFwdSelector: React.FC<LoadFwdSelectorProps> = ({
     : 'DC motor / machine';
 
   return (
-    <div className="w-full shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(7.5rem,0.9fr)] gap-3 rounded-xl border border-slate-800 bg-slate-950/70 backdrop-blur p-2.5">
+    <div className="w-full shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(9.5rem,0.9fr)] gap-3 rounded-xl border border-slate-800 bg-slate-950/70 backdrop-blur p-2.5">
       {/* ---- Load chain builder ---- */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
@@ -245,7 +245,7 @@ export const LoadFwdSelector: React.FC<LoadFwdSelectorProps> = ({
 
       {/* ---- Load summary ---- */}
       {R !== undefined && (
-        <div className="pt-2.5 border-t border-slate-800 sm:pt-0 sm:border-t-0 lg:border-l lg:pl-3">
+        <div className="pt-2.5 border-t border-slate-800 sm:pt-0 sm:border-t-0 lg:border-l lg:pl-3 lg:pr-1">
           <span className="block mb-1.5 text-[12px] font-mono uppercase tracking-wider text-slate-400 whitespace-nowrap">Load values</span>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-xs whitespace-nowrap">
             <dt className="text-slate-500">{hasR ? 'R' : 'Rp'}</dt>
